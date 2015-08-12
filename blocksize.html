@@ -20,12 +20,12 @@
 }
 
 .slider {
-    width: 300px;
+    width: 200px;
     float: left;
 }
 
 .bell {
-    width: 300px;
+    width: 400px;
     height: 100px;
     float: left;
 }
@@ -63,6 +63,7 @@ function calc() {
         var blocksize = blocksize_get();
         var txs_per_block = blocksize / (tx_size_average / (1024 * 1024));
         var txs_per_second = txs_per_block / block_period_seconds;
+        var kB_per_second = txs_per_second * (tx_size_average / 1024) * 2 /* individual txs + blocks */;
         var mips = txs_per_second * tx_inputs_average * mips_per_input;
         var html = "";
         html = html + "block period: " + block_period_seconds + " seconds<br/>";
@@ -72,7 +73,8 @@ function calc() {
         html = html + "blocksize: " + blocksize + " megabytes<br/>";
         html = html + "tx per block: " + txs_per_block.toFixed(2) + "<br/>";
         html = html + "tx per second: " + txs_per_second.toFixed(2) + "<br/>";
-        html = html + "MIPS: " + mips.toFixed(2) + "<br/>";
+        html = html + "*KB/s*: " + kB_per_second.toFixed(2) + "<br/>";
+        html = html + "*MIPS*: " + mips.toFixed(2) + "<br/>";
         $("#result").html(html);
     }, 500);
 }
@@ -91,16 +93,16 @@ $(function() {
 
     $( "#slider-bandwidth-range" ).slider({
         range: true,
-        min: 0,
-        max: 500,
-        values: [ 75, 300 ],
+        min: 125,
+        max: 12500,
+        values: [ 250, 1250 ],
         slide: function( event, ui ) {
-            $( "#bandwidth" ).val( ui.values[ 0 ] + " Kb/s - " + ui.values[ 1 ] + " Kb/s" );
+            $( "#bandwidth" ).val( ui.values[ 0 ] + " KB/s - " + ui.values[ 1 ] + " KB/s" );
             bell("bandwidth-bell", ui.values[ 0 ], ui.values[ 1 ]);
         }
     });
     $( "#bandwidth" ).val( $( "#slider-bandwidth-range" ).slider( "values", 0 ) +
-            " Kb/s - " + $( "#slider-bandwidth-range" ).slider( "values", 1 ) + " Kb/s" );
+            " KB/s - " + $( "#slider-bandwidth-range" ).slider( "values", 1 ) + " KB/s" );
     bell("bandwidth-bell", $( "#slider-bandwidth-range" ).slider( "values", 0 ), $( "#slider-bandwidth-range" ).slider( "values", 1 ));
 
     $( "#slider-mips-range" ).slider({
