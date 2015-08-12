@@ -11,19 +11,27 @@
     font-weight:bold;
 }
 
-.container {
+.param {
+    float: left;
+}
+
+.slider_container {
     min-height: 100px;
 }
 
 .slider {
-    width: 400px;
+    width: 300px;
     float: left;
 }
 
 .bell {
-    width: 400px;
+    width: 300px;
     height: 100px;
     float: left;
+}
+
+.cl {
+    clear: left;
 }
     </style>
     <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
@@ -76,10 +84,10 @@ $(function() {
         max: 200,
         value: 1,
         slide: function( event, ui ) {
-            $( "#blocksize" ).val( ui.value );
+            $( "#blocksize" ).val( ui.value + " MB");
         }
     });
-    $("#blocksize").val(blocksize_get());
+    $("#blocksize").val(blocksize_get() + " MB");
 
     $( "#slider-bandwidth-range" ).slider({
         range: true,
@@ -112,59 +120,96 @@ $(function() {
     $( "#slider-ram-range" ).slider({
         range: true,
         min: 1,
-        max: 256,
-        values: [ 2, 64 ],
+        max: 64,
+        values: [ 1, 16 ],
         slide: function( event, ui ) {
-            $( "#ram" ).val( (ui.values[ 0 ] * 256) + " MB - " + (ui.values[ 1 ] * 256) + " MB" );
-            bell("ram-bell", ui.values[ 0 ], ui.values[ 1 ]);
+            $( "#ram" ).val( ui.values[ 0 ] + " GB - " + ui.values[ 1 ] + " GB" );
+            bell("ram-bell", ui.values[ 0 ] , ui.values[ 1 ] );
         }
     });
-    $( "#ram" ).val( ($( "#slider-ram-range" ).slider( "values", 0 ) * 256) +
-            " MB - " + ($( "#slider-ram-range" ).slider( "values", 1 ) * 256) + " MB" );
-    bell("ram-bell", $( "#slider-ram-range" ).slider( "values", 0 ), $( "#slider-ram-range" ).slider( "values", 1 ));
+    $( "#ram" ).val( $( "#slider-ram-range" ).slider( "values", 0 ) +
+            " GB - " + $( "#slider-ram-range" ).slider( "values", 1 ) + " GB" );
+    bell("ram-bell", $( "#slider-ram-range" ).slider( "values", 0 ) , $( "#slider-ram-range" ).slider( "values", 1 ) );
+
+    $( "#slider-hd-range" ).slider({
+        range: true,
+        min: 50,
+        max: 4000,
+        values: [ 500, 2000 ],
+        slide: function( event, ui ) {
+            $( "#hd" ).val( ui.values[ 0 ] + " GB - " + (ui.values[ 1 ] ) + " GB" );
+            bell("hd-bell", ui.values[ 0 ], ui.values[ 1 ]);
+        }
+    });
+    $( "#hd" ).val( $( "#slider-hd-range" ).slider( "values", 0 ) +
+            " GB - " + $( "#slider-hd-range" ).slider( "values", 1 ) + " GB" );
+    bell("hd-bell", $( "#slider-hd-range" ).slider( "values", 0 ), $( "#slider-hd-range" ).slider( "values", 1 ));
 });
     </script>
 </head>
 <body>
     <div style="margin: 10px">
         <p>
-            <label for="blocksize">Blocksize (MB):</label>
+            <label for="blocksize">Blocksize:</label>
             <input type="text" id="blocksize" readonly class="param-value">
         </p>
         <div id="slider-blocksize-mb"></div>
 
-        <p>
-            <label for="bandwidth">Node bandwidth range:</label>
-            <input type="text" id="bandwidth" readonly class="param-value">
-        </p>
-        <div class="container">
-            <div id="slider-bandwidth-range" class="slider"></div>
-            <div id="bandwidth-bell" class="bell"></div>
+        <div class="row">
+            <div class="param">
+                <p>
+                <label for="bandwidth">Node bandwidth range:</label>
+                <input type="text" id="bandwidth" readonly class="param-value">
+                </p>
+                <div class="slider_container">
+                    <div id="slider-bandwidth-range" class="slider"></div>
+                    <div id="bandwidth-bell" class="bell"></div>
+                </div>
+            </div>
+            <div class="param">
+                <p>
+                <label for="mips">Node MIPS range (RPI2=~1200, i7 3770k=~107000):</label>
+                <input type="text" id="mips" readonly class="param-value">
+                </p>
+                <div class="slider_container">
+                    <div id="slider-mips-range" class="slider"></div>
+                    <div id="mips-bell" class="bell"></div>
+                </div>
+            </div>
+            <br class="cl" />
         </div>
 
-        <p>
-            <label for="mips">Node MIPS range (RPI2=~1200, i7 3770k=~107000):</label>
-            <input type="text" id="mips" readonly class="param-value">
-        </p>
-        <div class="container">
-            <div id="slider-mips-range" class="slider"></div>
-            <div id="mips-bell" class="bell"></div>
+        <div class="row">
+            <div class="param">
+                <p>
+                <label for="ram">Node RAM range:</label>
+                <input type="text" id="ram" readonly class="param-value">
+                </p>
+                <div class="slider_container">
+                    <div id="slider-ram-range" class="slider"></div>
+                    <div id="ram-bell" class="bell"></div>
+                </div>
+            </div>
+            <div class="param">
+                <p>
+                <label for="hd">Node Hard Disk range:</label>
+                <input type="text" id="hd" readonly class="param-value">
+                </p>
+                <div class="slider_container">
+                    <div id="slider-hd-range" class="slider"></div>
+                    <div id="hd-bell" class="bell"></div>
+                </div>
+            </div>
+            <br class="cl" />
         </div>
 
-        <p>
-            <label for="ram">Node RAM range:</label>
-            <input type="text" id="ram" readonly class="param-value">
-        </p>
-        <div class="container">
-            <div id="slider-ram-range" class="slider"></div>
-            <div id="ram-bell" class="bell"></div>
+        <div class="row">
+            <p>
+                <div>Calculate:</div>
+                <input type="submit" id="calc" value="Run calculation" readonly class="param-value" onclick="calc()">
+            </p>
+            <div id="result"></div>
         </div>
-
-        <p>
-            <div>Calculate:</div>
-            <input type="submit" id="calc" value="Run calculation" readonly class="param-value" onclick="calc()">
-        </p>
-        <div id="result"></div>
     </div>
 </body>
 </html>
