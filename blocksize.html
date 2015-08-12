@@ -11,9 +11,19 @@
     font-weight:bold;
 }
 
+.container {
+    min-height: 100px;
+}
+
+.slider {
+    width: 400px;
+    float: left;
+}
+
 .bell {
-    width: 600px;
+    width: 400px;
     height: 100px;
+    float: left;
 }
     </style>
     <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
@@ -36,24 +46,27 @@ function blocksize_get() {
 }
 
 function calc() {
-    var block_period_seconds = 10 * 60; // 10 minutes
-    var tx_size_average = 500; // bytes
-    var tx_inputs_average = 2;
-    var mips_per_input = 12.5;
-    var blocksize = blocksize_get();
-    var txs_per_block = blocksize / (tx_size_average / (1024 * 1024));
-    var txs_per_second = txs_per_block / block_period_seconds;
-    var mips = txs_per_second * tx_inputs_average * mips_per_input;
-    var html = "";
-    html = html + "block period: " + block_period_seconds + " seconds<br/>";
-    html = html + "tx size average: " + tx_size_average + " bytes<br/>";
-    html = html + "tx inputs average: " + tx_inputs_average + "<br/>";
-    html = html + "MIPS per input: " + mips_per_input + "<br/>";
-    html = html + "blocksize: " + blocksize + " megabytes<br/>";
-    html = html + "tx per block: " + txs_per_block.toFixed(2) + "<br/>";
-    html = html + "tx per second: " + txs_per_second.toFixed(2) + "<br/>";
-    html = html + "MIPS: " + mips.toFixed(2) + "<br/>";
-    $("#result").html(html);
+    $("#result").html("..");
+    setTimeout(function() {
+        var block_period_seconds = 10 * 60; // 10 minutes
+        var tx_size_average = 500; // bytes
+        var tx_inputs_average = 2;
+        var mips_per_input = 12.5;
+        var blocksize = blocksize_get();
+        var txs_per_block = blocksize / (tx_size_average / (1024 * 1024));
+        var txs_per_second = txs_per_block / block_period_seconds;
+        var mips = txs_per_second * tx_inputs_average * mips_per_input;
+        var html = "";
+        html = html + "block period: " + block_period_seconds + " seconds<br/>";
+        html = html + "tx size average: " + tx_size_average + " bytes<br/>";
+        html = html + "tx inputs average: " + tx_inputs_average + "<br/>";
+        html = html + "MIPS per input: " + mips_per_input + "<br/>";
+        html = html + "blocksize: " + blocksize + " megabytes<br/>";
+        html = html + "tx per block: " + txs_per_block.toFixed(2) + "<br/>";
+        html = html + "tx per second: " + txs_per_second.toFixed(2) + "<br/>";
+        html = html + "MIPS: " + mips.toFixed(2) + "<br/>";
+        $("#result").html(html);
+    }, 500);
 }
 
 $(function() {
@@ -113,7 +126,7 @@ $(function() {
     </script>
 </head>
 <body>
-    <div>
+    <div style="margin: 10px">
         <p>
             <label for="blocksize">Blocksize (MB):</label>
             <input type="text" id="blocksize" readonly class="param-value">
@@ -124,22 +137,28 @@ $(function() {
             <label for="bandwidth">Node bandwidth range:</label>
             <input type="text" id="bandwidth" readonly class="param-value">
         </p>
-        <div id="slider-bandwidth-range"></div>
-        <div id="bandwidth-bell" class="bell"></div>
+        <div class="container">
+            <div id="slider-bandwidth-range" class="slider"></div>
+            <div id="bandwidth-bell" class="bell"></div>
+        </div>
 
         <p>
             <label for="mips">Node MIPS range (RPI2=~1200, i7 3770k=~107000):</label>
             <input type="text" id="mips" readonly class="param-value">
         </p>
-        <div id="slider-mips-range"></div>
-        <div id="mips-bell" class="bell"></div>
+        <div class="container">
+            <div id="slider-mips-range" class="slider"></div>
+            <div id="mips-bell" class="bell"></div>
+        </div>
 
         <p>
             <label for="ram">Node RAM range:</label>
             <input type="text" id="ram" readonly class="param-value">
         </p>
-        <div id="slider-ram-range"></div>
-        <div id="ram-bell" class="bell"></div>
+        <div class="container">
+            <div id="slider-ram-range" class="slider"></div>
+            <div id="ram-bell" class="bell"></div>
+        </div>
 
         <p>
             <div>Calculate:</div>
