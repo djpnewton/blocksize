@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Blocksize effect on nodes (rough model)</title>
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <style>
+    .param-value {
+        border:0;
+        color:#f6931f;
+        font-weight:bold;
+    }
+
+    .bell {
+        width: 600px;
+        height: 100px;
+    }
+  </style>
+  <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <script src="http://www.flotcharts.org/javascript/jquery.flot.min.js"></script>
+  <script src="probability.js"></script>
+  <script>
+  function bell(id, start, stop) {
+    var step = (stop - start) / 50;
+    var mid = (start + stop) / 2;
+    var sd = (stop - start) / 8;
+    var vals = [];
+    for (var i = start; i < stop; i += step)
+        vals.push([i, NormalDensityZx(i, mid, sd)]);
+    $.plot($("#" + id), [ vals ]);
+  }
+
+  $(function() {
+    $( "#slider-blocksize-mb" ).slider({
+      range: "max",
+      min: 1,
+      max: 200,
+      value: 1,
+      slide: function( event, ui ) {
+        $( "#blocksize" ).val( ui.value );
+      }
+    });
+    $( "#blocksize" ).val( $( "#slider-blocksize-mb" ).slider( "value" ) );
+
+    $( "#slider-bandwidth-range" ).slider({
+      range: true,
+      min: 0,
+      max: 500,
+      values: [ 75, 300 ],
+      slide: function( event, ui ) {
+        $( "#bandwidth" ).val( ui.values[ 0 ] + " Kb/s - " + ui.values[ 1 ] + " Kb/s" );
+        bell("bandwidth-bell", ui.values[ 0 ], ui.values[ 1 ]);
+      }
+    });
+    $( "#bandwidth" ).val( $( "#slider-bandwidth-range" ).slider( "values", 0 ) +
+      " Kb/s - " + $( "#slider-bandwidth-range" ).slider( "values", 1 ) + " Kb/s" );
+    bell("bandwidth-bell", $( "#slider-bandwidth-range" ).slider( "values", 0 ), $( "#slider-bandwidth-range" ).slider( "values", 1 ));
+
+    $( "#slider-mips-range" ).slider({
+      range: true,
+      min: 1000,
+      max: 300000,
+      values: [ 1200, 150000 ],
+      slide: function( event, ui ) {
+        $( "#mips" ).val( ui.values[ 0 ] + " MIPS - " + ui.values[ 1 ] + " MIPS" );
+        bell("mips-bell", ui.values[ 0 ], ui.values[ 1 ]);
+      }
+    });
+    $( "#mips" ).val( $( "#slider-mips-range" ).slider( "values", 0 ) +
+      " MIPS - " + $( "#slider-mips-range" ).slider( "values", 1 ) + " MIPS" );    
+    bell("mips-bell", $( "#slider-mips-range" ).slider( "values", 0 ), $( "#slider-mips-range" ).slider( "values", 1 ));
+
+    $( "#slider-ram-range" ).slider({
+      range: true,
+      min: 1,
+      max: 256,
+      values: [ 2, 64 ],
+      slide: function( event, ui ) {
+        $( "#ram" ).val( (ui.values[ 0 ] * 256) + " MB - " + (ui.values[ 1 ] * 256) + " MB" );
+        bell("ram-bell", ui.values[ 0 ], ui.values[ 1 ]);
+      }
+    });
+    $( "#ram" ).val( ($( "#slider-ram-range" ).slider( "values", 0 ) * 256) +
+      " MB - " + ($( "#slider-ram-range" ).slider( "values", 1 ) * 256) + " MB" );    
+    bell("ram-bell", $( "#slider-ram-range" ).slider( "values", 0 ), $( "#slider-ram-range" ).slider( "values", 1 ));
+  });
+  </script>
+</head>
+<body>
+ 
+<p>
+  <label for="blocksize">Blocksize (MB):</label>
+  <input type="text" id="blocksize" readonly class="param-value">
+</p>
+<div id="slider-blocksize-mb"></div>
+
+<p>
+  <label for="bandwidth">Node bandwidth range:</label>
+  <input type="text" id="bandwidth" readonly class="param-value">
+</p>
+<div id="slider-bandwidth-range"></div>
+<div id="bandwidth-bell" class="bell"></div>
+ 
+<p>
+  <label for="mips">Node MIPS range (RPI2=~1200, i7 3770k=~107000):</label>
+  <input type="text" id="mips" readonly class="param-value">
+</p>
+<div id="slider-mips-range"></div>
+<div id="mips-bell" class="bell"></div>
+
+<p>
+  <label for="ram">Node RAM range:</label>
+  <input type="text" id="ram" readonly class="param-value">
+</p>
+<div id="slider-ram-range"></div>
+<div id="ram-bell" class="bell"></div>
+ 
+</body>
+</html>
